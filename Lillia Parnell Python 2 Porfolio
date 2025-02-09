@@ -1,0 +1,2836 @@
+#Python 2 Porfolio 
+
+
+## Sequence Objects Parts 1, 2, 3, and 4 
+
+
+
+```python
+#this allows you to print the length of each sequence
+print(len(my_seq))
+```
+
+
+```python
+# we can acess positins the same way with sequence objects 
+print(my_seq[0]) 
+# this prints sequence at # 0 position, in this case G
+```
+
+
+```python
+print(my_seq[4])
+```
+```python
+for index, letter in enumerate(my_seq): 
+    print("%i %s" % (index, letter))
+```
+```python
+from Bio.Seq import Seq
+```
+
+
+    ---------------------------------------------------------------------------
+
+    ModuleNotFoundError                       Traceback (most recent call last)
+
+    <ipython-input-1-f49b2228b99a> in <module>
+    ----> 1 from Bio.Seq import Seq
+    
+
+    ModuleNotFoundError: No module named 'Bio'
+
+
+
+```python
+my_seq = Seq('GATCG')
+```
+
+
+
+```python
+print(my_seq[2])
+```
+
+
+```python
+# we can also do a dot count function, which counts the occurances in a sequence. It does not count overlapping 
+Seq("AAAA").count("AA")
+```
+
+
+```python
+my_seq = Seq("GGGGATTCGGGGGGG")
+```
+
+
+```python
+len(my_seq)
+```
+
+
+```python
+# We can count specific letters 
+my_seq.count("G")
+```
+
+
+```python
+# Its important to measure the GC content to design primers. This allows you to find the percent GC content in a sequence
+100 * (my_seq.count("G") + my_seq.count("C"))/ len(my_seq)
+```
+
+
+```python
+# this activates the GC counting function built in BioPython
+from Bio.SeqUtils import gc_fraction
+```
+
+
+```python
+my_seq = Seq("GATGGGCCCCAAA")
+```
+
+
+```python
+gc_fraction(my_seq)
+```
+
+
+```python
+Seq('GATCCCCGGGGGG')
+
+```
+
+
+```python
+# We can slice sequences into multiple parts with a start, a stop, and a slide 
+# skip numbers 1 and 2 but pick up the 3
+my_seq[0::3]
+```
+
+
+```python
+# we will now start at position one and pick up every 3
+my_seq[1::3]
+```
+
+
+```python
+# we can use negatives to start from the other end 
+my_seq[::-1] 
+# this sequence reprints our dna sequence backwards
+```
+
+
+```python
+# If you have a sequence object and want to convert it back into a string you can... 
+str(my_seq)
+```
+
+
+```python
+# You can use this function to give labels or verbs to your sequences/strings
+fasta_format_string = ">Name\n%s\n" % my_seq
+```
+
+
+```python
+print(fasta_format_string)
+```
+
+
+```python
+# We can cincadinate or add to scripts together 
+seq1 = Seq("ACGT") 
+seq2 = Seq("AAAGGC")
+```
+
+
+```python
+# BY defining 2 sequences, we can then add them together
+seq1 + seq2
+```
+
+
+```python
+seq2 + seq1
+```
+
+
+```python
+contigs = [Seq("ATG"), Seq("ATCCCG"), Seq("TTGCA")]
+```
+
+
+```python
+# If you have every recieved sequences from other places, an N is where the sequence was unable to determine what the nucleotide was.
+spacer = Seq("N" *10)
+```
+
+
+```python
+# We can use the join function 
+# tahe the spacer region and join it with our contig sequence 
+# It uses 10 N's to join each dna sequence together
+spacer.join(contigs)
+```
+
+
+```python
+dna_seq = Seq("acgtACGT")
+```
+
+
+    ---------------------------------------------------------------------------
+
+    NameError                                 Traceback (most recent call last)
+
+    <ipython-input-2-54f598c371a1> in <module>
+    ----> 1 dna_seq = Seq("acgtACGT")
+    
+
+    NameError: name 'Seq' is not defined
+
+
+
+```python
+# If you are every using a program that is case senstive and your sequence does not match the program, here is what you can do 
+#This will make the whole sequence upper case
+dna_seq.upper()
+```
+
+
+```python
+#This will make the whole sequence lower case 
+dna_seq.lower()
+```
+
+
+```python
+dna_seq.upper()
+```
+
+
+```python
+"gtac" in dna_seq 
+# will be false because our sequence is upper case
+```
+
+
+```python
+"GTAC" in dna_seq 
+# this can be used to find certain sequences in the entire dna sequence, such as searching for any start codons
+```
+
+
+```python
+my_seq = Seq("GAAATGGCCATCGAAAAAATTTTTT")
+```
+
+
+```python
+my_seq.complement() 
+# this will give us the complement of the dna sequence
+```
+
+
+```python
+# If you want the reverse compliment( the compliment sequnce from the negative direction) 
+my_seq.reverse_complement()
+```
+
+
+```python
+# If we want the protein sequence we can do this 
+protein_seq = Seq("EVRNAK") 
+protein_seq.complement()
+```
+
+
+```python
+# V means A C or G 
+#ambiguity codes
+```
+
+
+```python
+coding_dna = Seq("ATGGGCATTACCGTACTTAGAGAGGGGTCCCGTG") 
+
+```
+
+
+```python
+coding_dna
+```
+
+
+```python
+template_dna = coding_dna.reverse_complement()
+```
+
+
+```python
+# translate and transcribe sequence 
+messenger_rna = coding_dna.transcribe 
+# this code takes the coding dna sequence and replaces every T with U
+```
+
+
+```python
+messenger_rna
+```
+
+
+```python
+# If you want to biological transcription, it will now be two steps 
+template_dna.reverse_complement().transcribe()
+```
+
+
+```python
+# You can do reverse transcription 
+messenger_rna.back_transcribe()
+```
+
+
+```python
+messenger_rna
+```
+
+
+```python
+# will translate RNA into protein
+messenger_rna.translate() 
+# Any atericks present represent stop codons
+```
+
+
+```python
+# to perform translation of a mitochondrial genome we can do this 
+coding_dna.translate(table="Vertebrate Mitochondrial")
+```
+
+
+```python
+coding_dna.translate(table = 2)
+```
+
+
+```python
+# if you want to translate up the the first stop codon and nothing else 
+coding_dna.translate(to_stop =True)
+```
+
+
+```python
+coding_dna.translate( table = 2, to_stop=True)
+```
+
+
+```python
+coding_dna.translate(table = 2, stop_symbol = "!")
+```
+
+
+```python
+# What if the mrna has non standard codons such as in bacteria? We can run this code 
+gene = Seq("GTGAAAAAAGATGCAA")
+```
+
+
+```python
+gene.translate(table = "Bacterial")
+```
+
+
+```python
+gene.translate(table = "Bacterial", to_stop = True)
+```
+
+
+```python
+gene.translate(table = "Bacterial", cds = True) 
+# this tells biopython to print out the complete bacterial protein sequence
+```
+
+
+```python
+from Bio.Data import CodonTable
+```
+
+
+```python
+standard_table = CodonTable.unambiguous_dna_by_name["Standard"]
+```
+
+
+```python
+mito_table = CodonTable.unambiguous_dna_by_name["Vertebrate Mitochondrial"]
+```
+
+
+```python
+print(standard_table)
+```
+
+
+```python
+print(mito_table)
+```
+
+
+```python
+#ask table what stop codon is 
+mito_table.stop_codons
+```
+
+
+```python
+mito_table.start_codons
+```
+
+
+```python
+#sequence comparisons 
+seq = Seq("ACGT")
+```
+
+
+```python
+"ACGT" == (seq1) 
+#does seq1 equal ACGT
+```
+
+
+```python
+seq1 =="ACGT"
+```
+
+
+```python
+#lenght of sequence is known but not the actual letters 
+unknown_seq = Seq(None, 10)
+```
+
+
+```python
+unknown_seq
+```
+
+
+```python
+len(unknown_seq)
+```
+
+
+```python
+seq = Seq({117512683: "TTGAAAACCTGAATGTGAGTCAGTCAAGGATAGT"}, length = 159345973)
+
+```
+
+
+```python
+seq[1000:1020]
+```
+
+
+```python
+seq[117512690:117512700]
+```
+
+
+```python
+seq[117512670:]
+```
+
+
+```python
+seq = Seq("ACGT")
+```
+
+
+```python
+undefined_seq = Seq(None, length =10)
+```
+
+
+```python
+seq + undefined_seq + seq
+```
+
+
+```python
+my_seq = Seq("GCCATTGTAATGGGCCGCTGAAAGGGTGCCCGA")
+```
+
+
+```python
+from Bio.Seq import MutableSeq
+```
+
+
+```python
+mutable_seq = MutableSeq(my_seq)
+```
+
+
+```python
+mutable_seq
+```
+
+
+```python
+mutable_seq[5] = "C"
+```
+
+
+```python
+mutable_seq
+
+```
+
+
+```python
+mutable_seq.remove("T")
+```
+
+
+```python
+mutable_seq
+```
+
+
+```python
+new_seq = Seq(mutable_seq)
+```
+
+
+```python
+new_seq
+```
+
+
+```python
+from Bio.Seq import reverse_complement, transcribe, back_transcribe
+```
+
+
+```python
+my_string = "GGGGTAAATGCCCGATGCTAGCTGAAAATTTTTATTTATATATGTGTTCTCTGCGATC"
+```
+
+
+```python
+reverse_complement(my_string)
+```
+
+
+```python
+transcribe(my_string)
+```
+
+
+```python
+back_transcrive(my_string)
+```
+
+
+```python
+translate(my_string)
+```
+
+
+```python
+
+``` 
+#Sequence Annotations Parts 1, 2, 3, and 4 
+
+```python
+from Bio.SeqRecord import SeqRecord
+```
+
+
+    ---------------------------------------------------------------------------
+
+    ModuleNotFoundError                       Traceback (most recent call last)
+
+    <ipython-input-1-0641ec5d803a> in <module>
+    ----> 1 from Bio.SeqRecord import SeqRecord
+    
+
+    ModuleNotFoundError: No module named 'Bio'
+
+
+
+```python
+from Bio.Seq import Seq
+```
+
+
+```python
+simple_seq = Seq("GATC")
+```
+
+
+```python
+simple_seq_r = SeqRecord(simple_seq)
+```
+
+
+```python
+simple_seq_r
+```
+
+
+```python
+#pass id to it 
+simple_seq_r.id = "AC1235"
+```
+
+
+```python
+simple_seq_r.description = "Made up sequence for the VDB computational bio class"
+```
+
+
+```python
+print(simple_seq_r.description)
+```
+
+
+```python
+simple_seq_r.seq
+```
+
+
+```python
+simple_seq_r
+```
+
+
+```python
+simple_seq_r.annotations["evidence"] = "None. This is just an example"
+```
+
+
+```python
+print(simple_seq_r.annotations["evidence"])
+```
+
+
+```python
+simple_seq_r
+```
+
+
+```python
+simple_seq_r.letter_annotations["phred_quality"] = [40,40, 38, 30]
+```
+
+
+```python
+#https://raw.githubusercontent.com/biopython/biopython/master/Tests/GenBank/NC_005816
+```
+
+
+```python
+from Bio import SeqIO
+```
+
+
+```python
+record = SeqIO.read("NC_005816.txt", "fasta")
+```
+
+
+```python
+record
+```
+
+
+```python
+record.seq
+```
+
+
+```python
+record.id 
+#individually pull ID
+```
+
+
+```python
+#see organism 
+record.description
+
+```
+
+
+```python
+record.dbxrefs
+```
+
+
+```python
+
+```
+
+
+```python
+record.annotations
+```
+
+
+```python
+record.features
+```
+
+
+```python
+#https://raw.githubusercontent.com/biopython/biopython/master/Tests/GenBank/NC_005815.gb
+```
+
+
+```python
+record = SeqIO.read("NC_005816.GB.txt", "genbank")
+```
+
+
+```python
+record
+
+```
+
+
+```python
+record.seq
+```
+
+
+```python
+record.id
+```
+
+
+```python
+record.name
+```
+
+
+```python
+record.description
+```
+
+
+```python
+record.letter_annotations 
+#genbank does not provide letter annotations for their files
+```
+
+
+```python
+len(record.annotations)
+```
+
+
+```python
+record.annotations["source"]
+```
+
+
+```python
+record.dbxrefs
+```
+
+
+    ---------------------------------------------------------------------------
+
+    NameError                                 Traceback (most recent call last)
+
+    <ipython-input-2-5c97077ea133> in <module>
+    ----> 1 record.dbxrefs
+    
+
+    NameError: name 'record' is not defined
+
+
+
+```python
+#records and enteries in a features table 
+len(record.features)
+
+```
+
+
+```python
+from Bio import SeqFeature
+```
+
+
+```python
+start_pos = SeqFeature.AfterPosition(5)
+```
+
+
+```python
+end_pos = SeqFeature.BetweenPosition(9, left = 8, right = 9)
+```
+
+
+```python
+start_pos = SeqFeature.BeforePosition(10)
+```
+
+
+```python
+my_location = SeqFeature.SimpleLocation(start_pos, end_pos)
+```
+
+
+```python
+print(my_location)
+```
+
+
+```python
+my_location.start
+```
+
+
+```python
+my_location.end
+```
+
+
+```python
+int(my_location.end)
+```
+
+
+```python
+int(my_location.start)
+```
+
+
+```python
+exact_location = SeqFeature.SimpleLocation(5,9)
+```
+
+
+```python
+print(exact_location)
+```
+
+
+```python
+exact_location.start
+```
+
+
+```python
+from Bio.SeqRecord import SeqRecord
+```
+
+
+```python
+record = SeqRecord(Seq("MMYQQGCFAGGTVLRLAKDLAENNRGARVLVVCSEITAVTFRGPSETHLDSMVGQALFGD" 
+...                      "GAGAVIVGSDPDLSVERPLYELVWGATLLPDSEGAIDGHLREVGLTFHLLKDVPGLISK" 
+...                     "NIEKSLKEAFTPLGISDWNSTWIAHPGGPAILDQVEAKLGLKEEKMRATREVLSEYGNM" 
+...                      "SSAC"), 
+                  id = "gi|14150828|gb|AAK54648.1|AF376133_1", 
+                  description = "chalcone synthase[Cucumis sativus]", 
+... )
+```
+
+
+```python
+print(record.format("fasta"))
+```
+
+
+```python
+print(record)
+```
+
+
+```python
+from Bio import SeqIO
+```
+
+
+```python
+record = SeqIO.read("NC_005816.GB.txt", "genbank")
+```
+
+
+```python
+len(record)
+```
+
+
+```python
+len(record.features)
+```
+
+
+```python
+print(record.features[20])
+```
+
+
+```python
+print(record.features[21])
+```
+
+
+```python
+sub_record = record[4300:4800]
+```
+
+
+```python
+len(sub_record)
+```
+
+
+```python
+len(sub_record.features)
+```
+
+
+```python
+sub_record.features[0]
+```
+
+
+```python
+sub_record.features[1]
+```
+
+
+```python
+print(sub_record.features[0])
+```
+
+
+```python
+print(sub_record.features[1])
+```
+
+
+```python
+sub_record.annotations
+```
+
+
+```python
+sub_record.dbxrefs
+```
+
+
+```python
+sub_record.annotations["topology"] = "linear"
+```
+
+
+```python
+sub_record.annotations
+```
+
+
+```python
+sub_record.id
+```
+
+
+```python
+sub_record.name
+```
+
+
+```python
+
+```
+
+
+```python
+sub_record.description
+```
+
+
+```python
+sub_record.description = 'Yersina pestis biovar Microtus str. 91001 plasmid pPCP1, complete sequence'
+```
+
+
+```python
+sub_record.description
+```
+
+
+```python
+print(sub_record.format("genbank")[:200] + "...")
+```
+
+
+```python
+record = SeqIO.read("NC_005816.GB.txt", "genbank")
+```
+
+
+```python
+record
+```
+
+
+```python
+len(record)
+```
+
+
+```python
+len(record.features)
+```
+
+
+```python
+record.dbxrefs
+```
+
+
+```python
+record.annotations.key()
+```
+
+
+```python
+shifted = record[2000:] + record[2000:]
+```
+
+
+```python
+shifted
+```
+
+
+```python
+len(shifted)
+```
+
+
+```python
+len(shifted.features)
+```
+
+
+```python
+shifted.annotations.key()
+```
+
+
+```python
+shifted.dbxrefs
+```
+
+
+```python
+shifted.dbxrefs = record.dbxrefs[:]
+```
+
+
+```python
+shifted.dbxrefs
+```
+
+
+```python
+shifted.annotations = record.annotations.copy()
+```
+
+
+```python
+shifted.annotations.keys()
+```
+
+
+```python
+record 
+```
+
+
+```python
+print("%s %i %i %i %i" % (record.id, len(record), len(record.features), len(record.dbxrefs), len(record.annotations))) 
+#print the first avlue as a string and then the next 4 %i's mean print the nexr four as integers.
+```
+
+
+```python
+rc = record.reverse_complement(id = "Testing")
+```
+
+
+```python
+print("%s %i %i %i %i" % (rc.id, len(rc), len(rc.features), len(rc.dbxrefs), len(rc.annotations)))
+```
+
+
+```python
+
+```
+
+
+```python
+
+``` 
+
+## Sequence IO 
+
+#Sequence_Objects 
+```python
+from Bio.Seq import Seq
+```
+
+
+    ---------------------------------------------------------------------------
+
+    ModuleNotFoundError                       Traceback (most recent call last)
+
+    <ipython-input-3-f49b2228b99a> in <module>
+    ----> 1 from Bio.Seq import Seq
+    
+
+    ModuleNotFoundError: No module named 'Bio'
+
+
+
+```python
+my_seq = Seq('GATCG')
+```
+
+
+```python
+for index, letter in enumerate(my_seq): 
+    print("%i %s" % (index, letter))
+```
+
+
+```python
+#this allows you to print the length of each sequence
+print(len(my_seq))
+```
+
+
+```python
+# we can acess positins the same way with sequence objects 
+print(my_seq[0]) 
+# this prints sequence at # 0 position, in this case G
+```
+
+
+```python
+print(my_seq[4])
+```
+
+
+```python
+print(my_seq[2])
+```
+
+
+```python
+# we can also do a dot count function, which counts the occurances in a sequence. It does not count overlapping 
+Seq("AAAA").count("AA")
+```
+
+
+```python
+my_seq = Seq("GGGGATTCGGGGGGG")
+```
+
+
+    ---------------------------------------------------------------------------
+
+    NameError                                 Traceback (most recent call last)
+
+    <ipython-input-4-dbec25fb0ddb> in <module>
+    ----> 1 my_seq = Seq("GGGGATTCGGGGGGG")
+    
+
+    NameError: name 'Seq' is not defined
+
+
+
+```python
+len(my_seq)
+```
+
+
+```python
+# We can count specific letters 
+my_seq.count("G")
+```
+
+
+```python
+# Its important to measure the GC content to design primers. This allows you to find the percent GC content in a sequence
+100 * (my_seq.count("G") + my_seq.count("C"))/ len(my_seq)
+```
+
+
+```python
+# this activates the GC counting function built in BioPython
+from Bio.SeqUtils import gc_fraction
+```
+
+
+```python
+my_seq = Seq("GATGGGCCCCAAA")
+```
+
+
+```python
+gc_fraction(my_seq)
+```
+
+
+```python
+Seq('GATCCCCGGGGGG')
+
+```
+
+
+```python
+# We can slice sequences into multiple parts with a start, a stop, and a slide 
+# skip numbers 1 and 2 but pick up the 3
+my_seq[0::3]
+```
+
+
+```python
+# we will now start at position one and pick up every 3
+my_seq[1::3]
+```
+
+
+```python
+# we can use negatives to start from the other end 
+my_seq[::-1] 
+# this sequence reprints our dna sequence backwards
+```
+
+
+```python
+# If you have a sequence object and want to convert it back into a string you can... 
+str(my_seq)
+```
+
+
+```python
+# You can use this function to give labels or verbs to your sequences/strings
+fasta_format_string = ">Name\n%s\n" % my_seq
+```
+
+
+```python
+print(fasta_format_string)
+```
+
+
+```python
+# We can cincadinate or add to scripts together 
+seq1 = Seq("ACGT") 
+seq2 = Seq("AAAGGC")
+```
+
+
+```python
+# BY defining 2 sequences, we can then add them together
+seq1 + seq2
+```
+
+
+```python
+seq2 + seq1
+```
+
+
+```python
+contigs = [Seq("ATG"), Seq("ATCCCG"), Seq("TTGCA")]
+```
+
+
+```python
+# If you have every recieved sequences from other places, an N is where the sequence was unable to determine what the nucleotide was.
+spacer = Seq("N" *10)
+```
+
+
+```python
+# We can use the join function 
+# tahe the spacer region and join it with our contig sequence 
+# It uses 10 N's to join each dna sequence together
+spacer.join(contigs)
+```
+
+
+```python
+dna_seq = Seq("acgtACGT")
+```
+
+
+```python
+# If you are every using a program that is case senstive and your sequence does not match the program, here is what you can do 
+#This will make the whole sequence upper case
+dna_seq.upper()
+```
+
+
+```python
+#This will make the whole sequence lower case 
+dna_seq.lower()
+```
+
+
+```python
+dna_seq.upper()
+```
+
+
+```python
+"gtac" in dna_seq 
+# will be false because our sequence is upper case
+```
+
+
+```python
+"GTAC" in dna_seq 
+# this can be used to find certain sequences in the entire dna sequence, such as searching for any start codons
+```
+
+
+```python
+my_seq = Seq("GAAATGGCCATCGAAAAAATTTTTT")
+```
+
+
+```python
+my_seq.complement() 
+# this will give us the complement of the dna sequence
+```
+
+
+```python
+# If you want the reverse compliment( the compliment sequnce from the negative direction) 
+my_seq.reverse_complement()
+```
+
+
+```python
+# If we want the protein sequence we can do this 
+protein_seq = Seq("EVRNAK") 
+protein_seq.complement()
+```
+
+
+```python
+# V means A C or G 
+#ambiguity codes
+```
+
+
+```python
+coding_dna = Seq("ATGGGCATTACCGTACTTAGAGAGGGGTCCCGTG") 
+
+```
+
+
+```python
+coding_dna
+```
+
+
+```python
+template_dna = coding_dna.reverse_complement()
+```
+
+
+```python
+# translate and transcribe sequence 
+messenger_rna = coding_dna.transcribe 
+# this code takes the coding dna sequence and replaces every T with U
+```
+
+
+```python
+messenger_rna
+```
+
+
+```python
+# If you want to biological transcription, it will now be two steps 
+template_dna.reverse_complement().transcribe()
+```
+
+
+```python
+# You can do reverse transcription 
+messenger_rna.back_transcribe()
+```
+
+
+```python
+messenger_rna
+```
+
+
+```python
+# will translate RNA into protein
+messenger_rna.translate() 
+# Any atericks present represent stop codons
+```
+
+
+```python
+# to perform translation of a mitochondrial genome we can do this 
+coding_dna.translate(table="Vertebrate Mitochondrial")
+```
+
+
+```python
+coding_dna.translate(table = 2)
+```
+
+
+```python
+# if you want to translate up the the first stop codon and nothing else 
+coding_dna.translate(to_stop =True)
+```
+
+
+```python
+coding_dna.translate( table = 2, to_stop=True)
+```
+
+
+```python
+coding_dna.translate(table = 2, stop_symbol = "!")
+```
+
+
+```python
+# What if the mrna has non standard codons such as in bacteria? We can run this code 
+gene = Seq("GTGAAAAAAGATGCAA")
+```
+
+
+```python
+gene.translate(table = "Bacterial")
+```
+
+
+```python
+gene.translate(table = "Bacterial", to_stop = True)
+```
+
+
+```python
+gene.translate(table = "Bacterial", cds = True) 
+# this tells biopython to print out the complete bacterial protein sequence
+```
+
+
+```python
+from Bio.Data import CodonTable
+```
+
+
+```python
+standard_table = CodonTable.unambiguous_dna_by_name["Standard"]
+```
+
+
+```python
+mito_table = CodonTable.unambiguous_dna_by_name["Vertebrate Mitochondrial"]
+```
+
+
+```python
+print(standard_table)
+```
+
+
+```python
+print(mito_table)
+```
+
+
+```python
+#ask table what stop codon is 
+mito_table.stop_codons
+```
+
+
+```python
+mito_table.start_codons
+```
+
+
+```python
+#sequence comparisons 
+seq = Seq("ACGT")
+```
+
+
+```python
+"ACGT" == (seq1) 
+#does seq1 equal ACGT
+```
+
+
+```python
+seq1 =="ACGT"
+```
+
+
+```python
+#lenght of sequence is known but not the actual letters 
+unknown_seq = Seq(None, 10)
+```
+
+
+```python
+unknown_seq
+```
+
+
+```python
+len(unknown_seq)
+```
+
+
+```python
+seq = Seq({117512683: "TTGAAAACCTGAATGTGAGTCAGTCAAGGATAGT"}, length = 159345973)
+
+```
+
+
+```python
+seq[1000:1020]
+```
+
+
+```python
+seq[117512690:117512700]
+```
+
+
+```python
+seq[117512670:]
+```
+
+
+```python
+seq = Seq("ACGT")
+```
+
+
+```python
+undefined_seq = Seq(None, length =10)
+```
+
+
+```python
+seq + undefined_seq + seq
+```
+
+
+```python
+my_seq = Seq("GCCATTGTAATGGGCCGCTGAAAGGGTGCCCGA")
+```
+
+
+```python
+from Bio.Seq import MutableSeq
+```
+
+
+```python
+mutable_seq = MutableSeq(my_seq)
+```
+
+
+```python
+mutable_seq
+```
+
+
+```python
+mutable_seq[5] = "C"
+```
+
+
+```python
+mutable_seq
+
+```
+
+
+```python
+mutable_seq.remove("T")
+```
+
+
+```python
+mutable_seq
+```
+
+
+```python
+new_seq = Seq(mutable_seq)
+```
+
+
+```python
+new_seq
+```
+
+
+```python
+from Bio.Seq import reverse_complement, transcribe, back_transcribe
+```
+
+
+```python
+my_string = "GGGGTAAATGCCCGATGCTAGCTGAAAATTTTTATTTATATATGTGTTCTCTGCGATC"
+```
+
+
+```python
+reverse_complement(my_string)
+```
+
+
+```python
+transcribe(my_string)
+```
+
+
+```python
+back_transcrive(my_string)
+```
+
+
+```python
+translate(my_string)
+```
+
+
+```python
+
+```
+
+
+```python
+
+``` 
+#SEquence_Input_Output 
+```python
+from Bio import SeqIO
+```
+
+
+    ---------------------------------------------------------------------------
+
+    ModuleNotFoundError                       Traceback (most recent call last)
+
+    <ipython-input-1-5d24a7c49c42> in <module>
+    ----> 1 from Bio import SeqIO
+    
+
+    ModuleNotFoundError: No module named 'Bio'
+
+
+
+```python
+for seq_record in SeqIO.parse("ls_orchid.gbk.txt", "fasta"): 
+    print(seq_record.id) 
+    print(repr(seq_record.seq)) 
+    print(len(seq_record))
+```
+
+
+```python
+for seq_record in SeqIO.parse("ls_orchid.gbk.txt", "genbank"): 
+    print(seq_record.id) 
+    print(repr(seq_record.seq)) 
+    print(len(seq_record))
+```
+
+
+```python
+identifiers = [seq_record.id for seq_record in SeqIO.parse("ls_orchid.gbk.txt", "genbank")]
+```
+
+
+```python
+record_iterator = SeqIO.parse("ls_orchid.gbk.txt", "fasta")
+```
+
+
+```python
+first_record = next(record_iterator)
+```
+
+
+```python
+print(first_record.id)
+```
+
+
+```python
+print(first_record.description)
+```
+
+
+```python
+second_record = next(record_iterator)
+```
+
+
+```python
+print(second_record.id)
+```
+
+
+```python
+print(second_record.description)
+```
+
+
+```python
+records = list(SeqIO.parse("ls_orchid.gbk.txt", "genbank"))
+```
+
+
+```python
+print("Found %i records" % len(records))
+```
+
+
+```python
+print("The last record") 
+last_record = records[-1] 
+print(last_record.id) 
+print(repr(last_record.seq)) 
+print(len(last_record))
+```
+
+
+```python
+print("The first record") 
+first_record = records[0] 
+print(first_record.id) 
+print(repr(first_record.seq)) 
+print(len(first_record))
+```
+
+
+```python
+record_iterator = SeqIO.parse("ls_orchid.gbk.txt", "genbank")
+```
+
+
+```python
+first_record = next(record_iterator)
+```
+
+
+```python
+print(first_record)
+```
+
+
+```python
+print(first_record.annotations)
+```
+
+
+```python
+print(first_record.annotations.keys())
+```
+
+
+```python
+print(first_record.annotations.values())
+```
+
+
+```python
+print(first_record.annotations["source"])
+```
+
+
+```python
+print(first_record.annotations["organism"])
+```
+
+
+```python
+all_species = []
+```
+
+
+```python
+for seq_record in SeqIO.parse("ls_orchid_gbk.txt", "genbank"): 
+    all_species.append(seq_record.annotations["organism"])
+```
+
+
+```python
+print(all_species)
+```
+
+
+```python
+all_species = [ 
+    seq_record.annotations["organism"] 
+    for seq_record in SeqIO.parse("ls_orchid.gbk.txt", "genbank") 
+]
+```
+
+
+```python
+print(all_species)
+```
+
+
+```python
+for seq_record in SeqIO.parse("ls_orchid.gbk.txt", "fasta"): 
+    all_species.append(seq_record.description.split()[1])
+
+```
+
+
+```python
+print(all_species)
+```
+
+
+```python
+record_iterator = SeqIO.parse("ls_orchid.gbk.txt", "fasta")
+```
+
+
+```python
+first_record = next(record_iterator) 
+
+```
+
+
+```python
+first_record.id
+```
+
+
+```python
+first_record.id = "new_id"
+```
+
+
+    ---------------------------------------------------------------------------
+
+    NameError                                 Traceback (most recent call last)
+
+    <ipython-input-2-4bde824bafad> in <module>
+    ----> 1 first_record.id = "new_id"
+    
+
+    NameError: name 'first_record' is not defined
+
+
+
+```python
+first_record.id
+```
+
+
+```python
+first_record
+```
+
+
+```python
+first_record.description = first_record.id + " " + "desired new description" 
+```
+
+
+```python
+print(first_record.format("fasta"[:200]))
+```
+
+
+```python
+from Bio.Seq import Seq
+```
+
+
+```python
+from Bio.SeqRecord import SeqRecord
+```
+
+
+```python
+rec1 = SeqRecord( 
+    Seq("MMYQQGCFAGGTVLRLAKDLAENNRGARVLVVCSEITAVTFRGPSETHLDSMVGQALFGD" 
+        "GAGAVIVGSDPDLSVERPLYELVWTGATLLPDSEGAIDGHLREVGLTFHLLKDVPGLISK" 
+        "NIEKSLKEAFTPLGISDWNSTFWIAHPGGPAILDQVEAKLGLKEEKMRATREVLSEYGNM" 
+        "SSAC", 
+),  
+    id = "gi|14150838|gb|AAK54658.1|AF376133_1", 
+    description = "chalcone synthase [Cucumis sativus]",
+)
+
+
+```
+
+
+```python
+rec2 = SeqRecord( 
+    Seq("YPDYYFRITNREHKAELKEKFQRMCDKSMIKKRYMYLTEEILKENPSMCEYMAPSLDARQ" 
+           "DMVVEIPKLGKEAAVKAIKEWGQ", 
+), 
+    id = "gi | 13919613 |gb| AAK33142.1", 
+    description = "chacone synthase [Fragaria vesca subsp. bracteata]", 
+)
+```
+
+
+```python
+rec3 = SeqRecord( 
+    Seq("MMYQQGCFAGGTVLRLkKDLAElNRiARVLVVCSEITAVTFRGPSETHLDSMVGQALFGD" 
+        "GAGAVIVGSDPDLSVERPLYELVWTGATLLPDSEGAIDGHLREVGLTFHLLKDVPGLISK" 
+        "NIEKSLKEAFTPLGISDWNSTFWIAHPGGPAILDQVEAKLGLKEEKMRATREVLSEYGNM" 
+        "SSAC", 
+),  
+    id = "gi|14150838|gb|AAK54658.1|AF376133_1", 
+    description = "chalcone synthase [Nicotina Tabacum]",
+)
+
+```
+
+
+```python
+my_records = [rec1, rec2, rec3]
+```
+
+
+```python
+from Bio import SeqIO
+SeqIO.write(my_records, "my_example.faa", "fasta" ) 
+# this makes a fasta file that you can save your file too
+```
+
+
+```python
+records = SeqIO.parse("ls_orchid.gbk.txt", "genbank")
+```
+
+
+```python
+count = SeqIO.write(records, "my_example.fasta", "fasta") 
+print("Converted %i records" % count) 
+#we wrote the code as a fasta file. The data from the ls_orchid file was converted to a fasta file  
+# second line is like a fail check to see how many reocrds were converted 
+# converted # should be 94 but for some reason when I reran the code it said 0
+```
+
+
+```python
+#reverse compliments  We are writing a loop
+for record in Seq.IO.parse("ls_orchid.gbk.txt", "genbank"): 
+    print(record.id) 
+    print(record.seq.reverse_complement()) 
+# this prints 94 reverse complements of all the codes in the ls_orchid file
+```
+
+
+```python
+records = [ 
+    rec.reverse_complement(id = "rc_" + rec.id, description = "reverse complement") 
+    for rec in SeqIO.parse("ls_orchid.fasta", "fasta") 
+] 
+# We are taking the reverse complemt, adding the rc for the name of each id, adding a decription that says reverse complemt, and doing this for every id in this file
+```
+
+
+```python
+print(records)
+```
+
+
+```python
+len(records)
+```
+
+
+```python
+records = [ 
+    rec.reverse_complement(id = "rc" + rec.id, description = "reverse complement") 
+    for rec in SeqIO.parse("ls_orchid.gbk.txt", "fasta")  
+    if len(rec) < 700 
+] 
+# we are saying that if the nucleotide sequence is less than 700, then do the following conditions 
+```
+
+
+```python
+len(records)
+```
+
+
+```python
+records = ( 
+rec.reverse_complemt(id = "rc_" + rec.id, description = "reverse_complement") 
+for rec in SeqIO.parse("ls_orchid.gbk.txt", "fasta") 
+    if len(rec) < 700 
+) 
+SeqIO.write(records, "rev_comp.fasta", "fasta")
+```
+
+
+```python
+
+```
+
+
+```python
+
+``` 
+#Multiple Sequence Alignment 
+```python
+from Bio import AlignIO
+```
+
+
+    ---------------------------------------------------------------------------
+
+    ModuleNotFoundError                       Traceback (most recent call last)
+
+    <ipython-input-1-34eb5d539a9e> in <module>
+    ----> 1 from Bio import AlignIO
+    
+
+    ModuleNotFoundError: No module named 'Bio'
+
+
+
+```python
+alignment = AlignIO.read("PF05371_seed.sth", "stockholm")
+```
+
+
+```python
+print(alignment)
+```
+
+
+```python
+# we can write our own code 
+alignment = AlignIO.read("PF05371_seed.sth", "stockholm")
+```
+
+
+```python
+print("Alignment length %i" % alignment.get_alignment_length())
+```
+
+
+```python
+for record in alignment: 
+    print("%s - %s" % (record.seq, record.id)) 
+# %s stands for string
+```
+
+
+```python
+for record in alignment:  
+    if record.dbxrefs: 
+        print("%s %s" % (record.seq, record.dbxrefs))  
+        
+
+```
+
+
+```python
+# if we want to see all annotations for all alignments 
+for record in alignment: 
+    print(record)
+
+```
+
+
+```python
+help(AlignIO) 
+#good reference
+```
+
+
+```python
+# what if we want to write an aligment file?  
+from Bio.Seq import Seq 
+from Bio.SeqRecord import SeqRecord 
+from Bio.Align import MultipleSeqAlignment
+
+```
+
+
+```python
+align1 = MultipleSeqAlignment( 
+...    [ 
+...        SeqRecord(Seq("ACTGCTAGCTAG"), id = "Alpha"), 
+...        SeqRecord(Seq("ACT-CTAGCTAG"), id = "Beta"), 
+...        SeqRecord(Seq("ACTGCTAGDTAG"), id = "Gamma"), 
+...    ] 
+... ) 
+>>> align2 = MultipleSeqAlignment( 
+    [ 
+...        SeqRecord(Seq("GTCAGC-AG"), id = "Delta"), 
+...        SeqRecord(Seq("GACAGCTAG"), id = "Epsilon"), 
+...        SeqRecord(Seq("GTCAGCTAG"), id = "Zeta"), 
+...    ] 
+... )  
+>>> align3 = MultipleSeqAlignment( 
+...    [ 
+...        SeqRecord(Seq("ACTAGTACAGCTG"), id = "Eta"), 
+...        SeqRecord(Seq("ACTAGTACAGCT-"), id = "Theta"), 
+...        SeqRecord(Seq("-CTAGTACAGCTG"), id = "Iota"), 
+...    ] 
+... )  
+```
+
+
+```python
+my_alignments = [align1, align2, align3] 
+```
+
+
+```python
+my_alignments
+```
+
+
+```python
+from Bio import AlignIO 
+AlignIO.write(my_alignments, "my_example.phy", "phylip")
+```
+
+
+```python
+# to subsection mutiple alignment files 
+
+```
+
+
+```python
+alignments = AlignIO.parse("my_example.phy", "phylip")
+```
+
+
+```python
+for alignment in alignments: 
+    print(alignment) 
+    print()
+```
+
+
+```python
+# this code above can be used to read in a file
+```
+
+
+```python
+alignments = list(AlignIO.parse("my_example.phy", "phylip"))
+```
+
+
+```python
+last_align = alignments[-1]
+```
+
+
+```python
+print(last_align) 
+#last align was printed
+```
+
+
+```python
+first_align = alignments[0]
+```
+
+
+```python
+print(first_align) 
+#prints first align
+```
+
+
+```python
+count = AlignIO.convert("PF05371_seed.sth", "stockholm", "PF05371_seed.aln", "clustal") 
+#conert file to clustal w file
+```
+
+
+```python
+print("Converted %i alignments" % count)
+```
+
+
+    ---------------------------------------------------------------------------
+
+    NameError                                 Traceback (most recent call last)
+
+    <ipython-input-2-ab54f0d1d320> in <module>
+    ----> 1 print("Converted %i alignments" % count)
+    
+
+    NameError: name 'count' is not defined
+
+
+
+```python
+aligments = AlignIO.parse("PF05371_seed.sth", "stockholm")
+```
+
+
+```python
+count = AlignIO.write(alignments, "PF05371_seed.aln", "clustal")
+```
+
+
+```python
+print("Converted %i alignments" % count)
+```
+
+
+```python
+AlignIO.convert("PF05371_seed.sth", "stockholm", "PF05371_seed.phy", "phylip")
+```
+
+
+```python
+AlignIO.convert("PF05371_seed.sth", "stockholm", "PF05371_seed.phy", "phylip-relaxed") 
+#PUTS IN ENTIRE SAMPLE NAME
+```
+
+
+```python
+# we can manipulate the identifers/names of file 
+aligment = AlignIO.read("PF05371_seed.sth", "stockholm") 
+name_mapping = {} 
+for i, record in enumerate(alignment): 
+    name_mapping[i] = record.id 
+    record.id = "seq%i" % i
+
+```
+
+
+```python
+print(name_mapping)
+```
+
+
+```python
+AlignIO.write([alignment], "PF05371_seed.phy", "phylip")
+```
+
+
+```python
+#slicing 
+alignment = AlignIO.read("PF05371_seed.sth", "stockholm") 
+```
+
+
+```python
+print("Number of rows: %i" % len(alignment))
+```
+
+
+```python
+for record in alignment: 
+    print("%s - %s" % (record.seq, record.id))
+```
+
+
+```python
+print(alignment[3:7])
+```
+
+
+```python
+print(alignment[2, 6]) 
+#second row 6th character, rows start 0, 1, 2 ... 
+```
+
+
+```python
+#pull out single column 
+print(alignment[:, 6])
+```
+
+
+```python
+# can select a range  
+# :, means take all the rows
+print(alignment[3:6, :6])
+```
+
+
+```python
+print(alignment[:, 6:9])
+```
+
+
+```python
+print(alignment[:, 9:]) 
+#everything afte the ninth letter
+```
+
+
+```python
+#remove blocks of columns 
+edited = alignment[:, :6] + alignment[:, 9:] 
+```
+
+
+```python
+print(edited)
+```
+
+
+```python
+edited.sort()
+```
+
+
+```python
+print(edited) 
+#this sorts based on the name by ID
+```
+
+
+```python
+alignment = MultipleSeqAlignment( 
+    [ 
+        SeqRecord(Seq("ACTCCTA"), id = "seq1"), 
+        SeqRecord(Seq("AAT-CTA"), id = "seq2"), 
+        SeqRecord(Seq("CCTACT-"), id = "seq3"),  
+        SeqRecord(Seq("TCTCCTC"), id = "seq4"), 
+   ] 
+)
+```
+
+
+```python
+print(alignment)
+```
+
+
+```python
+substitutions = alignment.substitutions
+```
+
+
+```python
+print(substitutions)
+```
+
+
+```python
+m = substitutions.select("ATCG")
+```
+
+
+```python
+print(m)
+```
+
+
+```python
+import Bio.Align.Applications
+```
+
+
+```python
+dir(Bio.Align.Applications)
+```
+
+
+```python
+from Bio.Align.Applications import ClustalwCommandline
+```
+
+
+```python
+help(ClustalwCommandline)
+```
+
+
+```python
+from Bio import AlignIO
+```
+
+
+```python
+align = AlignIO.read("opuntia.aln", "clustal")
+```
+
+
+```python
+print(align)
+```
+
+
+```python
+from Bio import Phylo
+```
+
+
+```python
+tree = Phylo.read("opuntia.dnd", "newick")
+```
+
+
+```python
+Phylo.draw_ascii(tree)
+```
+
+
+```python
+
+```
+
+
+```python
+
+```
+##Sequence Alignment Part 4 
+```python
+from Bio import Align
+```
+
+
+    ---------------------------------------------------------------------------
+
+    ModuleNotFoundError                       Traceback (most recent call last)
+
+    <ipython-input-1-6f2d7aea23e5> in <module>
+    ----> 1 from Bio import Align
+    
+
+    ModuleNotFoundError: No module named 'Bio'
+
+
+
+```python
+aligner = Align.PairwiseAligner()
+```
+
+
+```python
+#you cantaylor match scores depeding on system. case by case
+aligner = Align.PairwiseAligner(match_score = 1.0)
+```
+
+
+```python
+target = "GAACT" 
+# This is what we are aligning too
+```
+
+
+```python
+query = "GAT"
+```
+
+
+```python
+score = aligner.score(target, query)
+```
+
+
+```python
+score
+```
+
+
+```python
+alignments = aligner.align(target, query)
+```
+
+
+```python
+for alignment in alignments: 
+    print(alignment)
+```
+
+
+```python
+aligner.mode = "local"
+```
+
+
+```python
+target = "AGAACTC"
+```
+
+
+```python
+query = "GAACT"
+```
+
+
+```python
+score = aligner.score(target, query)
+```
+
+
+```python
+score
+```
+
+
+```python
+alignments = aligner.align(target, query)
+```
+
+
+```python
+for alignment in alignments: 
+    print(alignment)
+```
+
+
+```python
+print(aligner)
+```
+
+
+```python
+aligner.algorithm
+```
+
+
+```python
+#set significance score
+aligner.epsilon
+```
+
+
+```python
+#another section of code. Not sure what this is yet
+```
+
+
+```python
+from Bio import Align
+```
+
+
+```python
+aligner = Align.PairwiseAligner
+```
+
+
+```python
+target = "GAACT"
+```
+
+
+```python
+query = "GAT"
+```
+
+
+```python
+alignments = aligner.align(target, query)
+```
+
+
+    ---------------------------------------------------------------------------
+
+    NameError                                 Traceback (most recent call last)
+
+    <ipython-input-2-27ee4deb62a7> in <module>
+    ----> 1 alignments = aligner.align(target, query)
+    
+
+    NameError: name 'aligner' is not defined
+
+
+
+```python
+alignment = alignments[0]
+```
+
+
+```python
+alignment
+```
+
+
+```python
+alignment.score
+```
+
+
+```python
+aligner.target
+```
+
+
+```python
+aligner.query
+```
+
+
+```python
+print(alignment)
+```
+
+
+```python
+alignment.coordinates
+```
+
+
+```python
+len(alignment)
+```
+
+
+```python
+alignment.shape
+```
+
+
+```python
+alignment.mode = "local"
+```
+
+
+```python
+local_alignments = aligner.align("TGAACT", "GAC")
+```
+
+
+```python
+local_alignment = local_alignments[0]
+```
+
+
+```python
+print(local_alignments)
+```
+
+
+```python
+local_alignment.shape
+```
+
+
+```python
+aligner.mode = "global"
+```
+
+
+```python
+aligner = Align.PairwiseAligner(match = 1.0, mismatch_score = -10)
+```
+
+
+```python
+print(aligner)
+```
+
+
+```python
+aligments = aligner.align("AAACAAA", "AAAGAAA")
+```
+
+
+```python
+len(alignments)
+```
+
+
+```python
+print(alignments[0])
+```
+
+
+```python
+print(alignments[1])
+```
+
+
+```python
+print(local_alignment)
+```
+
+
+```python
+#we can sort local alignment 
+local_alignment.sort
+```
+
+
+```python
+from Bio.Seq import reverse_complement
+```
+
+
+```python
+target = "AAACCC"
+```
+
+
+```python
+query = "AACC"
+```
+
+
+```python
+aligner = Align.PairwiseAligner(mismatch_score = -1, internal_gap_score = -1)
+```
+
+
+```python
+aligner.score(target, query)
+```
+
+
+```python
+aligner.score(print(alignments[0]))
+```
+
+
+```python
+aligner.score(target, reverse_complement(query), strand = "-")
+```
+
+
+```python
+aligner.score(target, query, strand = "-")
+```
+
+
+```python
+alignments = aligner.align(target, query)
+```
+
+
+```python
+print(alignment[0])
+```
+
+
+```python
+print(alignment[0].format("bed"))
+```
+
+
+```python
+alignments = aligner.align(target, reverse_complement(query), strand = "-")
+```
+
+
+```python
+print(alignment[0].format("bed"))
+```
+
+
+```python
+alignments = aligner.align(target, query, strand = "-")
+```
+
+
+```python
+print(alignment[0].format("bed"))
+```
+
+
+```python
+print(alignments[0])
+```
+
+
+```python
+print(alignments[1])
+```
+
+
+```python
+aligner.left_gap_score = -0.5
+```
+
+
+```python
+aligner.right_gap_score = -0.2
+```
+
+
+```python
+aligner.score(target, query)
+```
+
+
+```python
+alignments = aligner.align(target, query)
+```
+
+
+```python
+len(alignments)
+```
+
+
+```python
+print(alignments[0])
+```
+
+
+```python
+alignments = aligner.align(target, reverse_complemet(query), strand = "-")
+```
+
+
+```python
+print(alignments)
+```
+
+
+```python
+aligner.score(target, reverse_complement(query), strand = "-")
+```
+
+
+```python
+print(alignments[0])
+```
+
+
+```python
+aligner.score(target, reverse_complement(query), strand = "+")
+```
+
+
+```python
+print
+```
+
+
+```python
+
+```
