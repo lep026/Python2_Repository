@@ -3683,6 +3683,148 @@ display(flann_matches)
 ```python
 
 ```
+##Object_Detection 
+```python
+import cv2
+```
+
+
+```python
+import numpy as np
+```
+
+
+```python
+import matplotlib.pyplot as plt
+```
+
+
+```python
+%matplotlib inline
+```
+
+
+```python
+full = cv2.imread('sunflower.jpg')
+```
+
+
+```python
+full = cv2.cvtColor(full, cv2.COLOR_BGR2RGB)
+```
+
+
+```python
+plt.imshow(full)
+```
+
+
+
+
+    <matplotlib.image.AxesImage at 0x7fa5f0b7cb90>
+
+
+
+
+![png](output_6_1.png)
+
+
+
+```python
+test = cv2.imread('opal.jpg')
+```
+
+
+```python
+test = cv2.cvtColor(test, cv2.COLOR_BGR2RGB)
+```
+
+
+```python
+plt.imshow(test)
+```
+
+
+
+
+    <matplotlib.image.AxesImage at 0x7fa5f02d5d50>
+
+
+
+
+![png](output_9_1.png)
+
+
+
+```python
+print('testing image shape:', full.shape) 
+print('training image shape:', test.shape)
+```
+
+    testing image shape: (2560, 2015, 3)
+    training image shape: (1200, 1200, 3)
+
+
+
+```python
+methods = ['cv2.TM_CCOEFF', 'cv.TM_CCOEFF_NORMED', 'cv2.TM_CCORR', 'cv2.TM_CCORR_NORMED', 'cv2.TM_SQDIFF', 'cn2.TM_SQDIFF' ]
+```
+
+
+```python
+for m in methods: 
+    
+    test_copy = test.copy() 
+    methods = eval(m) 
+    
+    res = cv2.matchTemplate(test_copy, full, methods) 
+    
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res) 
+    
+    if method in [cv2.TM_SQDIFF, cv2.TM_SQDIFF_NORMED]: 
+        top_left = min_loc 
+    else: 
+        top_left = max_loc 
+        
+    height, width, channels = full.shape 
+    bottom_right = (top_left[0] + width, top_left[1]+ height) 
+    
+    cv2.rectangle(test_copy, top_left, bottom_right, (255,0,0), 10) 
+    
+    plt.subplot(121) 
+    plt.imshow(res) 
+    plt.title("heatmap of template matching") 
+    plt.subplot(122) 
+    plt.imshow(test_copy) 
+    plt.title('Detection of template') 
+    
+    plt.suptitle(m) 
+    
+    plt.show() 
+    print('\n') 
+    print('\n')
+```
+
+
+    ---------------------------------------------------------------------------
+
+    TypeError                                 Traceback (most recent call last)
+
+    <ipython-input-16-cb07c4871f2d> in <module>
+    ----> 1 for m in methods:
+          2 
+          3     test_copy = test.copy()
+          4     methods = eval(m)
+          5 
+
+
+    TypeError: 'int' object is not iterable
+
+
+
+```python
+
+```
 
 
 ```python
